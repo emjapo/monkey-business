@@ -4,7 +4,7 @@
 //***************************************************
 // Read in obj file
 async function FetchWrapper(objURL) {
-    const fetchResponse = await fetch(objURL);//, {mode:'no-cors'});
+    const fetchResponse = await fetch(objURL, {mode:'no-cors'});
     const objFileContents = await fetchResponse.text();
     return objFileContents;
 }
@@ -161,7 +161,7 @@ function GetModelTransformationMatrix() {
 function LoadDataOnGPU(gl, myData, shaderVariableStr, shaderVariableDim, shaderProgram) {
     var bufferID = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferID);
-    gl.BufferData(gl.ARRAY_BUFFER, flatten(myData), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(myData), gl.STATIC_DRAW);
 
     if (shaderVariableStr != "") {
         var myVar = gl.getAttribLocation(shaderProgram, shaderVariableStr);
@@ -231,7 +231,7 @@ function render(gl, pointLength, shaderProgram) {
     var modelMatrix = GetModelTransformationMatrix();
     gl.uniformMatrix4fv(modelMatrixLoc, false, flatten(modelMatrix));
 
-    gl.drawArrays(gl.Triangles, 0, pointLength);
+    gl.drawArrays(gl.TRIANGLES, 0, pointLength);
 }
 
 // main function that invokes all of the other functions
@@ -249,14 +249,14 @@ async function main() {
     var shaderProgram = setupShaders(gl);
 
     //possibly will cause issues if my path isn't right 
-    const modelURL = "Monkey.obj";
+    const modelURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/Monkey.obj?token=AM6SBYVFL644GJL32CFSYRLBPBSB2";
 
     const objFileContents = await FetchWrapper(modelURL);
     const objData = SimpleObjParse(objFileContents);
     const points = VerySimpleTriangleVertexExtraction(objData);
     const normals = EstimateNormalsFromTriangles(points);
 
-    var vertexBufferId = LoadDataOnGPU(gl, points.flat(), "vPosition, 4, shaderProgram");
+    var vertexBufferId = LoadDataOnGPU(gl, points.flat(), "vPosition", 4, shaderProgram);
     var normalBufferId = LoadDataOnGPU(gl, normals.flat(), "vNormal", 3, shaderProgram);
 
     render(gl, points.length, shaderProgram);
