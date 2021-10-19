@@ -94,3 +94,37 @@ function VerySimpleTriangleVertexExtraction(objDictionary) {
 
     return (points);
 }
+
+// creates a list of normals, A little confused because I thought we already got that from the obj file but oh well
+function EstimateNormalsFromTriangles(points) {
+    var normals = new Array();
+
+    for (let triIdx = 0; triIdx < points.length; triIdx+=3) {
+        const p0 = vec3(points[triIdx + 0][0],
+                        points[triIdx + 0][1],
+                        points[triIdx + 0][2]);
+        const p1 = vec3(points[triIdx + 1][0],
+                        points[triIdx + 1][1],
+                        points[triIdx + 1][2]);
+        const p2 = vec3(points[triIdx + 2][0],
+                        points[triIdx + 2][1],
+                        points[triIdx + 2][2]);
+
+        // The normal for the triangle is 
+        // (p2-p0) cross (p1-p0) !!! this seems important
+        const u1 = subtract(p2,p0);
+        const u2 = subtract(p1,p0);
+        var n = cross(u1,u2);
+
+        n = normalize(n);
+
+        normals.push(n);
+        normals.push(n);
+        normals.push(n);
+    }
+
+    return (normals);
+}
+
+// end of reading in obj file functions
+// *********************************************
