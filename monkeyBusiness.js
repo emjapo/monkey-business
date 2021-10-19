@@ -171,3 +171,27 @@ function LoadDataOnGPU(gl, myData, shaderVariableStr, shaderVariableDim, shaderP
 
     return bufferID;
 }
+
+
+// Set up the shaders, this will almost definitely need to be changed later
+function setupShaders(gl) {
+    var vertexShaderCode = "attribute vec4 vPosition;" +
+    "uniform mat4 uModelMatrix;" +
+    "attribute vec3 vNormal;" +
+    "varying vec3 fColor;" +
+    "void main() {" +
+    "   fColor = vNormal;" +
+    "   gl_Position = uModelMatrix * vPosition;" +
+    "}";
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader, vertexShaderCode);
+    gl.compileShader(vertexShader);
+    var compileSuccess = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
+    if (!compileSuccess){
+        console.log("Vertex shader failed to compile");
+        var compilationLog = gl.getShaderInfoLog(vertexShader);
+        console.log("Shader compiler log: " + compilationLog);
+    }
+
+    var fragmentShaderCode = 
+}
