@@ -221,3 +221,15 @@ function setupShaders(gl) {
 
     return shaderProgram;
 }
+
+
+// Another functions that will be refactored later but for now I am just concerned with if my obj file will be rendered
+function render(gl, pointLength, shaderProgram) {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    var modelMatrixLoc = gl.getUniformLocation(shaderProgram, "uModelMatrix");
+    var modelMatrix = GetModelTransformationMatrix();
+    gl.uniformMatrix4fv(modelMatrixLoc, false, flatten(modelMatrix));
+
+    gl.drawArrays(gl.Triangles, 0, pointLength);
+}
