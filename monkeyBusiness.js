@@ -189,9 +189,35 @@ function setupShaders(gl) {
     var compileSuccess = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
     if (!compileSuccess){
         console.log("Vertex shader failed to compile");
-        var compilationLog = gl.getShaderInfoLog(vertexShader);
+        let compilationLog = gl.getShaderInfoLog(vertexShader);
         console.log("Shader compiler log: " + compilationLog);
     }
 
-    var fragmentShaderCode = 
+    var fragmentShaderCode = "precision mediump float;" +
+    "varying vec3 fColor;" +
+    "void  main() {" +
+    "   gl_FragColor = vec4(fColor, 1.0);" +
+    "}";
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader, fragmentShaderCode);
+    gl.compileShader(fragmentShader);
+    compileSuccess = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
+    if (!compileSuccess) {
+        console.log('Fragment shader failed to compile!');
+        let compilationLog = gl.getShaderInfoLog(fragmentShader);
+        console.log('Shader compiler log: ' + compilationLog);
+    }
+
+    var shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
+    gl.useProgram(shaderProgram);
+
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+        let info = gl.getProgramInfoLog(shaderProgram);
+        console.log("Could not compile WebGL program: " + info);
+    }
+
+    return shaderProgram;
 }
