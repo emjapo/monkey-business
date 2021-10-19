@@ -154,5 +154,20 @@ function GetModelTransformationMatrix() {
                         0.0, sinx, cosx, 0.0,
                         0.0, 0.0, 0.0, 1.0 );
 
-    return (mult(rotationx, mult(rotationY, scalingMatrix)));
+    return (mult(rotationX, mult(rotationY, scalingMatrix)));
+}
+
+// Same old load data on the GPU function
+function LoadDataOnGPU(gl, myData, shaderVariableStr, shaderVariableDim, shaderProgram) {
+    var bufferID = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferID);
+    gl.BufferData(gl.ARRAY_BUFFER, flatten(myData), gl.STATIC_DRAW);
+
+    if (shaderVariableStr != "") {
+        var myVar = gl.getAttribLocation(shaderProgram, shaderVariableStr);
+        gl.vertexAttribPointer(myVar, shaderVariableDim, gl.Float, false, 0, 0);
+        gl.enableVertexAttribArray(myVar);
+    }
+
+    return bufferID;
 }
