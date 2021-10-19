@@ -233,3 +233,35 @@ function render(gl, pointLength, shaderProgram) {
 
     gl.drawArrays(gl.Triangles, 0, pointLength);
 }
+
+// main function that invokes all of the other functions
+async function main() {
+    var canvas = document.getElementById("gl-canvas");
+    var gl = WebGLUtils.setupWebGL(canvas);
+    if(!gl) {
+        alert("WebGL is not available");
+    }
+
+    gl.viewport(0, 0, canvas.clientWidth, canvas.height);
+    gl.clearColor(0.9, 0.9, 0.9, 1.0);
+    gl.enable(gl.DEPTH_TEST);
+
+    var shaderProgram = setupShaders(gl);
+
+    //possibly will cause issues if my path isn't right 
+    const modelURL = "Monkey.obj";
+
+    const objFileContents = await FetchWrapper(modelURL);
+    const objData = SimpleObjParse(objFileContents);
+    const points = VerySimpleTriangleVertexExtraction(objData);
+    const normals = EstimateNormalsFromTriangles(points);
+
+    var vertexBufferId = LoadDataOnGPU(gl, points.flat(), "vPosition, 4, shaderProgram");
+    var normalBufferId = LoadDataOnGPU(gl, normals.flat(), "vNormal", 3, shaderProgram);
+
+    render(gl, points.length, shaderProgram);
+}
+
+window.onload = function init() {
+    main();
+}
