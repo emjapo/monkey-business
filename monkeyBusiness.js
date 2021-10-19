@@ -128,3 +128,31 @@ function EstimateNormalsFromTriangles(points) {
 
 // end of reading in obj file functions
 // *********************************************
+
+
+// Right now I am going to also use the GetModelTransformationMatrix() from week 7 examples, but this is probally likely to change as I don't exactly know what it is doing at the moment
+
+// I changed variable names to help me no what is going on
+function GetModelTransformationMatrix() {
+    var cosy = Math.cos(-Math.PI/8);
+    var siny = Math.sin(-Math.PI/8);
+    var cosx = Math.cos(-Math.PI/8);
+    var sinx = Math.sin(-Math.PI/8);
+
+    var scalingMatrix = mat4(0.1, 0.0, 0.0, 0.0,
+                            0.0, 0.1, 0.0, 0.0,
+                            0.0, 0.0, 0.1, 0.0,
+                            0.0, 0.0, 0.0, 1.0 );
+    
+    var rotationY = mat4(cosy, 0.0, siny, 0.0,
+                        0.0, 1.0, 0.0, 0.0,
+                        -siny, 0.0, cosy, 0.0,
+                        0.0, 0.0, 0.0, 1.0);
+
+    var rotationX = mat4(1.0, 0.0, 0.0, 0.0,
+                        0.0, cosx, -sinx, 0.0,
+                        0.0, sinx, cosx, 0.0,
+                        0.0, 0.0, 0.0, 1.0 );
+
+    return (mult(rotationx, mult(rotationY, scalingMatrix)));
+}
