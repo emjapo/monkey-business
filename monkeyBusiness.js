@@ -76,3 +76,21 @@ function SimpleObjParse(objFileContents) {
             "textures": textureList,
             "normals": normalList});
 }
+
+// This function should give the triangles that are meant to be drawn
+function VerySimpleTriangleVertexExtraction(objDictionary) {
+    const vertexList = objDictionary.vertices;
+    const faceList = objDictionary.faces;
+    var points = new Array();
+
+    // I keep getting an annoying error telling me to do my loops as a for of loop instead so I will try it out here anad see if it works
+    for (let face of faceList) {
+        const triangleList = face;
+
+        points.push(vertexList[triangleList[0]]);
+        points.push(vertexList[triangleList[1]]);
+        points.push(vertexList[triangleList[2]]);
+    }
+
+    return (points);
+}
