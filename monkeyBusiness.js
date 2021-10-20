@@ -4,7 +4,7 @@
 //***************************************************
 // Read in obj file
 async function FetchWrapper(objURL) {
-    const fetchResponse = await fetch(objURL, {mode:'no-cors'});
+    const fetchResponse = await fetch(objURL);//, {mode:'no-cors'});
     const objFileContents = await fetchResponse.text();
     return objFileContents;
 }
@@ -17,7 +17,7 @@ function SimpleObjParse(objFileContents) {
     var textureList = new Array();
     var normalList = new Array();
 
-    const vertexRE = /^V .*/; //I don't know what the 'RE' stands for here but I'm assuming this is what it uses to determine what data is stored in each line
+    const vertexRE = /^[Vv] .*/; //I don't know what the 'RE' stands for here but I'm assuming this is what it uses to determine what data is stored in each line
     const faceRE = /^f .*/;
     const textureRE = /^vt .*/;
     const normalRE = /^vn .*/;
@@ -165,7 +165,7 @@ function LoadDataOnGPU(gl, myData, shaderVariableStr, shaderVariableDim, shaderP
 
     if (shaderVariableStr != "") {
         var myVar = gl.getAttribLocation(shaderProgram, shaderVariableStr);
-        gl.vertexAttribPointer(myVar, shaderVariableDim, gl.Float, false, 0, 0);
+        gl.vertexAttribPointer(myVar, shaderVariableDim, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(myVar);
     }
 
