@@ -133,15 +133,20 @@ function EstimateNormalsFromTriangles(points) {
 // Right now I am going to also use the GetModelTransformationMatrix() from week 7 examples, but this is probally likely to change as I don't exactly know what it is doing at the moment
 
 // I changed variable names to help me no what is going on
-function GetModelTransformationMatrix() {
-    var cosy = Math.cos(-Math.PI/8);
-    var siny = Math.sin(-Math.PI/8);
-    var cosx = Math.cos(-Math.PI/8);
-    var sinx = Math.sin(-Math.PI/8);
+function GetModelTransformationMatrix(rotateXDegree, rotateYDegree, rotateZDegree) {
+   
+    var cosx = Math.cos(rotateXDegree);
+    var sinx = Math.sin(rotateXDegree);
 
-    var scalingMatrix = mat4(0.1, 0.0, 0.0, 0.0,
-                            0.0, 0.1, 0.0, 0.0,
-                            0.0, 0.0, 0.1, 0.0,
+    var cosy = Math.cos(rotateYDegree);
+    var siny = Math.sin(rotateYDegree);
+
+    var cosz = Math.cos(rotateZDegree);
+    var sinz = Math.sin(rotateZDegree);
+
+    var scalingMatrix = mat4(0.8, 0.0, 0.0, 0.0,
+                            0.0, 0.8, 0.0, 0.0,
+                            0.0, 0.0, 0.8, 0.0,
                             0.0, 0.0, 0.0, 1.0 );
     
     var rotationY = mat4(cosy, 0.0, siny, 0.0,
@@ -154,7 +159,13 @@ function GetModelTransformationMatrix() {
                         0.0, sinx, cosx, 0.0,
                         0.0, 0.0, 0.0, 1.0 );
 
-    return (mult(rotationX, mult(rotationY, scalingMatrix)));
+    var rotationZ = mat4(cosz, -sinz, 0.0, 0.0,
+                        sinz, cosz, 0.0, 0.0,
+                        0.0, 0.0, 1.0, 0.0,
+                        0.0, 0.0, 0.0, 1.0);
+
+    return (mult(rotationZ, mult(rotationX, mult(rotationY, scalingMatrix))));
+    //return scalingMatrix;
 }
 
 // Same old load data on the GPU function
@@ -227,8 +238,23 @@ function setupShaders(gl) {
 function render(gl, pointLength, shaderProgram) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    var rotateXDegree;
+    var rotateYDegree;
+    var rotateZDegree;
+
+    // get slider values (not sure this is the best location)
+    document.getElementById("rotatex").onchange = function (event) {
+        rotateXDegree = parseFloat(event.target.value);
+    };
+    document.getElementById("rotatey").onchange = function (event) {
+        rotateYDegree = parseFloat(event.target.value);
+    };
+    document.getElementById("rotatez").onchange = function (event) {
+        rotateZDegree = parseFloat(event.target.value);
+    };
+
     var modelMatrixLoc = gl.getUniformLocation(shaderProgram, "uModelMatrix");
-    var modelMatrix = GetModelTransformationMatrix();
+    var modelMatrix = GetModelTransformationMatrix(rotateXDegree, rotateYDegree, rotateZDegree);
     gl.uniformMatrix4fv(modelMatrixLoc, false, flatten(modelMatrix));
 
     gl.drawArrays(gl.TRIANGLES, 0, pointLength);
