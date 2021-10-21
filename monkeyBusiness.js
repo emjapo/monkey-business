@@ -164,6 +164,9 @@ function GetModelTransformationMatrix(rotateXDegree, rotateYDegree, rotateZDegre
                         0.0, 0.0, 1.0, 0.0,
                         0.0, 0.0, 0.0, 1.0);
 
+    if (rotateXDegree == 0.0 && rotateYDegree && rotateZDegree) {
+        return scalingMatrix;
+    }
     return (mult(rotationZ, mult(rotationX, mult(rotationY, scalingMatrix))));
     //return scalingMatrix;
 }
@@ -235,26 +238,12 @@ function setupShaders(gl) {
 
 
 // Another functions that will be refactored later but for now I am just concerned with if my obj file will be rendered
-function render(gl, pointLength, shaderProgram) {
+function render(gl, pointLength, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    var rotateXDegree;
-    var rotateYDegree;
-    var rotateZDegree;
-
-    // get slider values (not sure this is the best location)
-    document.getElementById("rotatex").onchange = function (event) {
-        rotateXDegree = parseFloat(event.target.value);
-    };
-    document.getElementById("rotatey").onchange = function (event) {
-        rotateYDegree = parseFloat(event.target.value);
-    };
-    document.getElementById("rotatez").onchange = function (event) {
-        rotateZDegree = parseFloat(event.target.value);
-    };
 
     var modelMatrixLoc = gl.getUniformLocation(shaderProgram, "uModelMatrix");
     var modelMatrix = GetModelTransformationMatrix(rotateXDegree, rotateYDegree, rotateZDegree);
+    console.log(modelMatrix);
     gl.uniformMatrix4fv(modelMatrixLoc, false, flatten(modelMatrix));
 
     gl.drawArrays(gl.TRIANGLES, 0, pointLength);
@@ -267,6 +256,7 @@ async function main() {
     if(!gl) {
         alert("WebGL is not available");
     }
+    
 
     gl.viewport(0, 0, canvas.clientWidth, canvas.height);
     gl.clearColor(0.9, 0.9, 0.9, 1.0);
@@ -285,7 +275,26 @@ async function main() {
     var vertexBufferId = LoadDataOnGPU(gl, points.flat(), "vPosition", 4, shaderProgram);
     var normalBufferId = LoadDataOnGPU(gl, normals.flat(), "vNormal", 3, shaderProgram);
 
-    render(gl, points.length, shaderProgram);
+    var rotateXDegree = 0.0;
+    var rotateYDegree = 0.0;
+    var rotateZDegree = 0.0;
+
+    // get slider values (not sure this is the best location)
+    document.getElementById("rotatex").onchange = function (event) {
+        rotateXDegree = parseFloat(event.target.value);
+        console.log(rotateXDegree);
+        render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
+    };
+    document.getElementById("rotatey").onchange = function (event) {
+        rotateYDegree = parseFloat(event.target.value);
+        render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
+    };
+    document.getElementById("rotatez").onchange = function (event) {
+        rotateZDegree = parseFloat(event.target.value);
+        render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
+    };
+
+    render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
 }
 
 window.onload = function init() {
