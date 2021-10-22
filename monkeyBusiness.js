@@ -139,19 +139,20 @@ function GetModelTransformationMatrix(rotateXDegree, rotateYDegree, rotateZDegre
                             0.0, 0.0, 1.0, 0.0,
                             0.0, 0.0, 0.0, 1.0);
    
-    var cosx = Math.cos(rotateXDegree);
-    var sinx = Math.sin(rotateXDegree);
+    var cosx = Math.cos(rotateXDegree * (Math.PI/180));
+    var sinx = Math.sin(rotateXDegree * (Math.PI / 180));
 
-    var cosy = Math.cos(rotateYDegree);
-    var siny = Math.sin(rotateYDegree);
+    var cosy = Math.cos(rotateYDegree * (Math.PI / 180));
+    var siny = Math.sin(rotateYDegree * (Math.PI / 180));
 
-    var cosz = Math.cos(rotateZDegree);
-    var sinz = Math.sin(rotateZDegree);
+    var cosz = Math.cos(rotateZDegree * (Math.PI / 180));
+    var sinz = Math.sin(rotateZDegree * (Math.PI / 180));
 
-    var scalingMatrix = mat4(0.8, 0.0, 0.0, 0.0,
+   var scalingMatrix = mat4(0.8, 0.0, 0.0, 0.0,
                             0.0, 0.8, 0.0, 0.0,
                             0.0, 0.0, 0.8, 0.0,
                             0.0, 0.0, 0.0, 1.0 );
+    //var scalingMatrix = Identity;
     
     var rotationY = mat4(cosy, 0.0, siny, 0.0,
                         0.0, 1.0, 0.0, 0.0,
