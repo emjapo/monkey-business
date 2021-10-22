@@ -148,9 +148,9 @@ function GetModelTransformationMatrix(rotateXDegree, rotateYDegree, rotateZDegre
     var cosz = Math.cos(rotateZDegree * (Math.PI / 180));
     var sinz = Math.sin(rotateZDegree * (Math.PI / 180));
 
-   var scalingMatrix = mat4(0.8, 0.0, 0.0, 0.0,
-                            0.0, 0.8, 0.0, 0.0,
-                            0.0, 0.0, 0.8, 0.0,
+   var scalingMatrix = mat4(0.6, 0.0, 0.0, 0.0,
+                            0.0, 0.6, 0.0, 0.0,
+                            0.0, 0.0, 0.6, 0.0,
                             0.0, 0.0, 0.0, 1.0 );
     //var scalingMatrix = Identity;
     
@@ -291,29 +291,30 @@ async function main() {
     var rotateZDegree = 0.0;
 
     // get slider values (not sure this is the best location)
-    document.getElementById("rotatex").onchange = function (event) {
+    document.getElementById("rotatex").oninput = function (event) {
         rotateXDegree = parseFloat(event.target.value);// - rotateXDegree; // I'm thinking this will make it where if it is rotated by 30deg then the slider is moved to 45 it will only go 15 more degrees rather than 30+45
-        console.log(rotateXDegree);
-        console.log(rotateYDegree);
-        console.log(rotateZDegree);
+        // console.log(rotateXDegree);
+        // console.log(rotateYDegree);
+        // console.log(rotateZDegree);
         render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
     };
-    document.getElementById("rotatey").onchange = function (event) {
+    document.getElementById("rotatey").oninput = function (event) {
         rotateYDegree = parseFloat(event.target.value);// - rotateYDegree;
-        console.log(rotateXDegree);
-        console.log(rotateYDegree);
-        console.log(rotateZDegree);
+        // console.log(rotateXDegree);
+        // console.log(rotateYDegree);
+        // console.log(rotateZDegree);
         render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
     };
-    document.getElementById("rotatez").onchange = function (event) {
+    document.getElementById("rotatez").oninput = function (event) {
         rotateZDegree = parseFloat(event.target.value);// - rotateZDegree;
-        console.log(rotateXDegree);
-        console.log(rotateYDegree);
-        console.log(rotateZDegree);
+        // console.log(rotateXDegree);
+        // console.log(rotateYDegree);
+        // console.log(rotateZDegree);
         render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
     };
 
-    render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
+    window.requestAnimFrame(function () { render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree) });
+    // render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
 }
 
 window.onload = function init() {
