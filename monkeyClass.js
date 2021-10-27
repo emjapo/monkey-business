@@ -83,6 +83,44 @@ class FunkyMonkey {
         this.transformationMatrix = mult(T, this.transformationMatrix);
     }
 
+    // the banana is too big and scaling here is probably the easiest way
+    // also I want to see a different angle of the banana
+
+    Scale(sx, sy, sz) {
+        // Setup the translation matrix
+        var S = mat4(sx, 0.0, 0.0, 0,
+            0.0, sy, 0.0, 0,
+            0.0, 0.0, sz, 0,
+            0.0, 0.0, 0.0, 1.0);
+
+        this.transformationMatrix = mult(S, this.transformationMatrix);
+    }
+
+    RotateY(angle) {
+        var cs = Math.cos(angle * Math.PI / 180.0);
+        var sn = Math.sin(angle * Math.PI / 180.0);
+
+        var Ry = mat4(cs, 0.0, sn, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            -sn, 0.0, cs, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        this.transformationMatrix = mult(Ry, this.transformationMatrix);
+    }
+
+    RotateX(angle) {
+        var cs = Math.cos(angle * Math.PI / 180.0);
+        var sn = Math.sin(angle * Math.PI / 180.0);
+
+        var Rx = mat4(1.0, 0.0, 0.0, 0.0,
+            0.0, cs, -sn, 0.0,
+            0.0, sn, cs, 0.0,
+            0.0, 0.0, 0.0, 1.0);
+
+        this.transformationMatrix = mult(Rx, this.transformationMatrix);
+    }
+
+
     GetMatrix(rotateX, rotateY, rotateZ) {
         this.transformationMatrix = mult(GetModelTransformationMatrix(rotateX, rotateY, rotateZ), this.transformationMatrix); //preserves translation, but Z is zeroed out
         // I think the matrix needs to be reset but I'm not sure where that should happen

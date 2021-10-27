@@ -257,8 +257,11 @@ function render(gl, monkeyList, shaderProgram, rotationList) {
 
     for (let monkeyIdx = 0; monkeyIdx < monkeyList.length; monkeyIdx++) {
         monkeyList[monkeyIdx].ResetMatrix();
-        monkeyList[0].Translate(0.6, 0.0, 0.0);
-        monkeyList[1].Translate(-0.6, 0.0, 0.0);
+        monkeyList[0].Translate(0.5, 0.0, 0.0);
+        monkeyList[1].Translate(-2.4, -0.2, 0.0);
+        monkeyList[1].Scale(0.6, 0.6, 0.6);
+        monkeyList[1].RotateX(45);
+        monkeyList[1].RotateY(45);
         monkeyList[monkeyIdx].GetMatrix(rotationList[0], rotationList[1], rotationList[2]);
         monkeyList[monkeyIdx].DrawMonkey();
     }
@@ -286,7 +289,7 @@ async function main() {
     //possibly will cause issues if my path isn't right 
     const modelURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/Monkey.obj?token=AM6SBYULXYIHODNAUWBJAMTBQH6WC"; // this changes but I don't know what caused it to change so hopefully it doesn't happen again
 
-    const bananaURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/banana2.obj?token=AM6SBYTE2YUMM5ZSWLW3W4DBQIF7E";
+    const bananaURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/banana3.obj?token=AM6SBYUIPCZJGPUOW3DFYOLBQKIJA";
 
     const objFileContents = await FetchWrapper(modelURL);
     const bananaFileContents = await FetchWrapper(bananaURL);
