@@ -257,8 +257,8 @@ function render(gl, monkeyList, shaderProgram, rotationList) {
 
     for (let monkeyIdx = 0; monkeyIdx < monkeyList.length; monkeyIdx++) {
         monkeyList[monkeyIdx].ResetMatrix();
-        monkeyList[0].Translate(0.6, 0.6, 0.0);
-        monkeyList[1].Translate(-0.6, -0.6, 0.0);
+        monkeyList[0].Translate(0.6, 0.0, 0.0);
+        monkeyList[1].Translate(-0.6, 0.0, 0.0);
         monkeyList[monkeyIdx].GetMatrix(rotationList[0], rotationList[1], rotationList[2]);
         monkeyList[monkeyIdx].DrawMonkey();
     }
@@ -286,13 +286,13 @@ async function main() {
     //possibly will cause issues if my path isn't right 
     const modelURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/Monkey.obj?token=AM6SBYULXYIHODNAUWBJAMTBQH6WC"; // this changes but I don't know what caused it to change so hopefully it doesn't happen again
 
-    const bananaURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/banana2.obj?token=AM6SBYRLMT3FRZOCY63GYDTBQIFQQ";
+    const bananaURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/banana2.obj?token=AM6SBYTE2YUMM5ZSWLW3W4DBQIF7E";
 
     const objFileContents = await FetchWrapper(modelURL);
     const bananaFileContents = await FetchWrapper(bananaURL);
 
-    var BobTheMonkey = new FunkyMonkey(gl, shaderProgram, objFileContents);
-    var TimTheMonkey = new FunkyMonkey(gl, shaderProgram, bananaFileContents);
+    var CuriousGeorge = new FunkyMonkey(gl, shaderProgram, objFileContents);
+    var Banana = new FunkyMonkey(gl, shaderProgram, bananaFileContents);
 
     var rotateXDegree = 0.0;
     var rotateYDegree = 0.0;
@@ -301,18 +301,18 @@ async function main() {
     // get slider values (not sure this is the best location)
     document.getElementById("rotatex").oninput = function (event) {
         rotateXDegree = parseFloat(event.target.value);
-        render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
+        render(gl, [CuriousGeorge, Banana], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
     };
     document.getElementById("rotatey").oninput = function (event) {
         rotateYDegree = parseFloat(event.target.value);
-        render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
+        render(gl, [CuriousGeorge, Banana], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
     };
     document.getElementById("rotatez").oninput = function (event) {
         rotateZDegree = parseFloat(event.target.value);
-        render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
+        render(gl, [CuriousGeorge, Banana], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
     };
 
-    window.requestAnimFrame(function () { render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]) });
+    window.requestAnimFrame(function () { render(gl, [CuriousGeorge, Banana], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]) });
 }
 
 window.onload = function init() {
