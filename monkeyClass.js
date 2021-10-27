@@ -2,15 +2,15 @@
 // it would be really cool to have a banana but for now I will just go with two monkeys
 
 class FunkyMonkey {
-    constructor(gl, shaderProgram) {
+    constructor(gl, shaderProgram, objFileContents) {
         this.gl = gl;
         this.shaderProgram = shaderProgram;
 
-        this.CreateMonkeyPoints();
-        this.CreateMonkeyColors();
+        this.CreateMonkeyPoints(objFileContents);
+        //this.CreateMonkeyColors();
 
         // Set the transformation matrix. Not sure how this will combine with the work I have done yet
-        this.matrixLoc = gl.getUniformLocation(shaderProgram, "uMatrix");
+        this.matrixLoc = gl.getUniformLocation(shaderProgram, "uModelMatrix");
         if (this.matrixLoc == null) {
             console.log("Couldn't find 'uMatrix', sorry sis.");
         }
@@ -23,15 +23,38 @@ class FunkyMonkey {
 
     //************************* */
     // Get the points
-    CreateMonkeyPoints() {
+    // maybe just having the function calls from the main file will work
+    CreateMonkeyPoints(objFileContents) {
+        //this.objFileContents = await FetchWrapper(modelURL);
+        this.objData = SimpleObjParse(objFileContents);
+        this.points = VerySimpleTriangleVertexExtraction(this.objData);
+        this.normals = EstimateNormalsFromTriangles(this.points);
+
+        this.shapeBufferID = this.gl.createBuffer();                                
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.shapeBufferID);                      
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, flatten(this.points), this.gl.STATIC_DRAW); 
+
+        var posVar = this.gl.getAttribLocation(this.shaderProgram, "vPosition"); 
+        this.gl.vertexAttribPointer(posVar, 4, this.gl.FLOAT, false, 0, 0);     
+        this.gl.enableVertexAttribArray(posVar);
+
+
+        // set color/normals
+        this.colorBufferID = this.gl.createBuffer();                                  
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBufferID);                       
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, flatten(this.normals), this.gl.STATIC_DRAW); 
+        
+        var colorVar = this.gl.getAttribLocation(this.shaderProgram, "vNormal"); 
+        this.gl.vertexAttribPointer(colorVar, 3, this.gl.FLOAT, false, 0, 0);         
+        this.gl.enableVertexAttribArray(colorVar);
 
     }
 
     //************************* */
     // I actually might be able to skip this because the colors are the normals, but I will put it for now
-    CreateMonkeyColors() {
+    // CreateMonkeyColors() {
 
-    }
+    // }
 
     DrawMonkey() {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.shapeBufferID); 
@@ -39,13 +62,13 @@ class FunkyMonkey {
         this.gl.vertexAttribPointer(positionVar, 4, this.gl.FLOAT, false, 0, 0);
 
         //// color questionable, I'll be back
-        // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBufferID);          
-        // var colorVar = this.gl.getAttribLocation(this.shaderProgram, "vColor"); 
-        // this.gl.vertexAttribPointer(colorVar, 4, this.gl.FLOAT, false, 0, 0);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBufferID);          
+        var colorVar = this.gl.getAttribLocation(this.shaderProgram, "vNormal"); 
+        this.gl.vertexAttribPointer(colorVar, 3, this.gl.FLOAT, false, 0, 0);
 
         this.gl.uniformMatrix4fv(this.matrixLoc, false, flatten(this.transformationMatrix));
 
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.shapePoints.length);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.points.length);
     }
 
     ResetMatrix() {
@@ -66,6 +89,10 @@ class FunkyMonkey {
 
         // Update the ship's transformation matrix
         this.transformationMatrix = mult(T, this.transformationMatrix);
+    }
+
+    GetMatrix(rotateX, rotateY, rotateZ) {
+        this.transformationMatrix = mult(GetModelTransformationMatrix(rotateX, rotateY, rotateZ), this.transformationMatrix);
     }
 
 }

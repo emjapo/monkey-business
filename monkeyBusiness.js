@@ -249,15 +249,20 @@ function setupShaders(gl) {
 
 
 // Another functions that will be refactored later but for now I am just concerned with if my obj file will be rendered
-function render(gl, pointLength, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree) {
+function render(gl, monkeyList, shaderProgram, rotationList) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    var modelMatrixLoc = gl.getUniformLocation(shaderProgram, "uModelMatrix");
-    var modelMatrix = GetModelTransformationMatrix(rotateXDegree, rotateYDegree, rotateZDegree);
-    console.log(modelMatrix);
-    gl.uniformMatrix4fv(modelMatrixLoc, false, flatten(modelMatrix));
+    // var modelMatrixLoc = gl.getUniformLocation(shaderProgram, "uModelMatrix");
+    // var modelMatrix = GetModelTransformationMatrix(rotationList[0], rotationList[1], rotationList[2]);
 
-    gl.drawArrays(gl.TRIANGLES, 0, pointLength);
+    for (let monkeyIdx = 0; monkeyIdx < monkeyList.length; monkeyIdx++) {
+        monkeyList[monkeyIdx].GetMatrix(rotationList[0], rotationList[1], rotationList[2]);
+        monkeyList[monkeyIdx].DrawMonkey();
+    }
+    // console.log(modelMatrix);
+    // gl.uniformMatrix4fv(modelMatrixLoc, false, flatten(modelMatrix));
+
+    // gl.drawArrays(gl.TRIANGLES, 0, pointLength);
 }
 
 // main function that invokes all of the other functions
@@ -279,12 +284,18 @@ async function main() {
     const modelURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/Monkey.obj?token=AM6SBYVFL644GJL32CFSYRLBPBSB2";
 
     const objFileContents = await FetchWrapper(modelURL);
-    const objData = SimpleObjParse(objFileContents);
-    const points = VerySimpleTriangleVertexExtraction(objData);
-    const normals = EstimateNormalsFromTriangles(points);
 
-    var vertexBufferId = LoadDataOnGPU(gl, points.flat(), "vPosition", 4, shaderProgram);
-    var normalBufferId = LoadDataOnGPU(gl, normals.flat(), "vNormal", 3, shaderProgram);
+    var BobTheMonkey = new FunkyMonkey(gl, shaderProgram, objFileContents);
+    var TimTheMonkey = new FunkyMonkey(gl, shaderProgram, objFileContents);
+
+    TimTheMonkey.Translate(0.5, 0.5, 0.5);
+
+    // const objData = SimpleObjParse(objFileContents);
+    // const points = VerySimpleTriangleVertexExtraction(objData);
+    // const normals = EstimateNormalsFromTriangles(points);
+
+    // var vertexBufferId = LoadDataOnGPU(gl, points.flat(), "vPosition", 4, shaderProgram);
+    // var normalBufferId = LoadDataOnGPU(gl, normals.flat(), "vNormal", 3, shaderProgram);
 
     var rotateXDegree = 0.0;
     var rotateYDegree = 0.0;
@@ -292,28 +303,19 @@ async function main() {
 
     // get slider values (not sure this is the best location)
     document.getElementById("rotatex").oninput = function (event) {
-        rotateXDegree = parseFloat(event.target.value);// - rotateXDegree; // I'm thinking this will make it where if it is rotated by 30deg then the slider is moved to 45 it will only go 15 more degrees rather than 30+45
-        // console.log(rotateXDegree);
-        // console.log(rotateYDegree);
-        // console.log(rotateZDegree);
-        render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
+        rotateXDegree = parseFloat(event.target.value);
+        render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
     };
     document.getElementById("rotatey").oninput = function (event) {
-        rotateYDegree = parseFloat(event.target.value);// - rotateYDegree;
-        // console.log(rotateXDegree);
-        // console.log(rotateYDegree);
-        // console.log(rotateZDegree);
-        render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
+        rotateYDegree = parseFloat(event.target.value);
+        render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
     };
     document.getElementById("rotatez").oninput = function (event) {
-        rotateZDegree = parseFloat(event.target.value);// - rotateZDegree;
-        // console.log(rotateXDegree);
-        // console.log(rotateYDegree);
-        // console.log(rotateZDegree);
-        render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
+        rotateZDegree = parseFloat(event.target.value);
+        render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]);
     };
 
-    window.requestAnimFrame(function () { render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree) });
+    window.requestAnimFrame(function () { render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]) });
     // render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
 }
 
