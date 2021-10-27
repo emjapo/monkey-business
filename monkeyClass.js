@@ -7,7 +7,6 @@ class FunkyMonkey {
         this.shaderProgram = shaderProgram;
 
         this.CreateMonkeyPoints(objFileContents);
-        //this.CreateMonkeyColors();
 
         // Set the transformation matrix. Not sure how this will combine with the work I have done yet
         this.matrixLoc = gl.getUniformLocation(shaderProgram, "uModelMatrix");
@@ -15,9 +14,9 @@ class FunkyMonkey {
             console.log("Couldn't find 'uMatrix', sorry sis.");
         }
         this.transformationMatrix = mat4 (1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1);
+                                        0, 1, 0, 0,
+                                        0, 0, 1, 0,
+                                        0, 0, 0, 1);
         this.gl.uniformMatrix4fv(this.matrixLoc, false, flatten(this.transformationMatrix));
     }
 
@@ -25,7 +24,6 @@ class FunkyMonkey {
     // Get the points
     // maybe just having the function calls from the main file will work
     CreateMonkeyPoints(objFileContents) {
-        //this.objFileContents = await FetchWrapper(modelURL);
         this.objData = SimpleObjParse(objFileContents);
         this.points = VerySimpleTriangleVertexExtraction(this.objData);
         this.normals = EstimateNormalsFromTriangles(this.points);
@@ -50,12 +48,6 @@ class FunkyMonkey {
 
     }
 
-    //************************* */
-    // I actually might be able to skip this because the colors are the normals, but I will put it for now
-    // CreateMonkeyColors() {
-
-    // }
-
     DrawMonkey() {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.shapeBufferID); 
         var positionVar = this.gl.getAttribLocation(this.shaderProgram, "vPosition");
@@ -66,6 +58,8 @@ class FunkyMonkey {
         var colorVar = this.gl.getAttribLocation(this.shaderProgram, "vNormal"); 
         this.gl.vertexAttribPointer(colorVar, 3, this.gl.FLOAT, false, 0, 0);
 
+        console.log(this.transformationMatrix);
+
         this.gl.uniformMatrix4fv(this.matrixLoc, false, flatten(this.transformationMatrix));
 
         this.gl.drawArrays(this.gl.TRIANGLES, 0, this.points.length);
@@ -73,9 +67,9 @@ class FunkyMonkey {
 
     ResetMatrix() {
         this.transformationMatrix = mat4(1.0, 0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0)
+                                        0.0, 1.0, 0.0, 0.0,
+                                        0.0, 0.0, 1.0, 0.0,
+                                        0.0, 0.0, 0.0, 1.0)
     }
 
     // I think I can skip all of the other ones since I want the whole scene to rotate together, so I'll leave that in the other file and this one will just have translate
@@ -83,16 +77,18 @@ class FunkyMonkey {
     Translate(tx, ty, tz) {
         // Setup the translation matrix
         var T = mat4(1.0, 0.0, 0.0, tx,
-            0.0, 1.0, 0.0, ty,
-            0.0, 0.0, 0.0, tz,
-            0.0, 0.0, 0.0, 1.0);
+                    0.0, 1.0, 0.0, ty,
+                    0.0, 0.0, 1.0, tz,
+                    0.0, 0.0, 0.0, 1.0);
 
         // Update the ship's transformation matrix
         this.transformationMatrix = mult(T, this.transformationMatrix);
     }
 
     GetMatrix(rotateX, rotateY, rotateZ) {
-        this.transformationMatrix = mult(GetModelTransformationMatrix(rotateX, rotateY, rotateZ), this.transformationMatrix);
+        this.transformationMatrix = mult(GetModelTransformationMatrix(rotateX, rotateY, rotateZ), this.transformationMatrix); //preserves translation, but Z is zeroed out
+        // I think the matrix needs to be reset but I'm not sure where that should happen
+        //this.transformationMatrix = GetModelTransformationMatrix(rotateX, rotateY, rotateZ); // this gets rid of the translation
     }
 
 }

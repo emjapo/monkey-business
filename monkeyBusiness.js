@@ -256,6 +256,9 @@ function render(gl, monkeyList, shaderProgram, rotationList) {
     // var modelMatrix = GetModelTransformationMatrix(rotationList[0], rotationList[1], rotationList[2]);
 
     for (let monkeyIdx = 0; monkeyIdx < monkeyList.length; monkeyIdx++) {
+        monkeyList[monkeyIdx].ResetMatrix();
+        monkeyList[0].Translate(0.6, 0.6, 0.0);
+        monkeyList[1].Translate(-0.6, -0.6, 0.0);
         monkeyList[monkeyIdx].GetMatrix(rotationList[0], rotationList[1], rotationList[2]);
         monkeyList[monkeyIdx].DrawMonkey();
     }
@@ -288,15 +291,6 @@ async function main() {
     var BobTheMonkey = new FunkyMonkey(gl, shaderProgram, objFileContents);
     var TimTheMonkey = new FunkyMonkey(gl, shaderProgram, objFileContents);
 
-    TimTheMonkey.Translate(0.5, 0.5, 0.5);
-
-    // const objData = SimpleObjParse(objFileContents);
-    // const points = VerySimpleTriangleVertexExtraction(objData);
-    // const normals = EstimateNormalsFromTriangles(points);
-
-    // var vertexBufferId = LoadDataOnGPU(gl, points.flat(), "vPosition", 4, shaderProgram);
-    // var normalBufferId = LoadDataOnGPU(gl, normals.flat(), "vNormal", 3, shaderProgram);
-
     var rotateXDegree = 0.0;
     var rotateYDegree = 0.0;
     var rotateZDegree = 0.0;
@@ -316,7 +310,6 @@ async function main() {
     };
 
     window.requestAnimFrame(function () { render(gl, [BobTheMonkey, TimTheMonkey], shaderProgram, [rotateXDegree, rotateYDegree, rotateZDegree]) });
-    // render(gl, points.length, shaderProgram, rotateXDegree, rotateYDegree, rotateZDegree);
 }
 
 window.onload = function init() {
