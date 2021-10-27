@@ -286,10 +286,13 @@ async function main() {
     //possibly will cause issues if my path isn't right 
     const modelURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/Monkey.obj?token=AM6SBYULXYIHODNAUWBJAMTBQH6WC"; // this changes but I don't know what caused it to change so hopefully it doesn't happen again
 
+    const bananaURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/banana1.obj?token=AM6SBYT3DXRQNHF42I7OY3TBQIDOM";
+
     const objFileContents = await FetchWrapper(modelURL);
+    const bananaFileContents = await FetchWrapper(bananaURL);
 
     var BobTheMonkey = new FunkyMonkey(gl, shaderProgram, objFileContents);
-    var TimTheMonkey = new FunkyMonkey(gl, shaderProgram, objFileContents);
+    var TimTheMonkey = new FunkyMonkey(gl, shaderProgram, bananaFileContents);
 
     var rotateXDegree = 0.0;
     var rotateYDegree = 0.0;
