@@ -284,7 +284,7 @@ async function main() {
     var shaderProgram = setupShaders(gl);
 
     //possibly will cause issues if my path isn't right 
-    const modelURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/Monkey.obj?token=AM6SBYULXYIHODNAUWBJAMTBQH6WC";
+    const modelURL = "https://raw.githubusercontent.com/WinthropUniversity/csci440-fa21-project2-emjapo/main/Monkey.obj?token=AM6SBYULXYIHODNAUWBJAMTBQH6WC"; // this changes but I don't know what caused it to change so hopefully it doesn't happen again
 
     const objFileContents = await FetchWrapper(modelURL);
 

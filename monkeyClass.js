@@ -58,8 +58,6 @@ class FunkyMonkey {
         var colorVar = this.gl.getAttribLocation(this.shaderProgram, "vNormal"); 
         this.gl.vertexAttribPointer(colorVar, 3, this.gl.FLOAT, false, 0, 0);
 
-        console.log(this.transformationMatrix);
-
         this.gl.uniformMatrix4fv(this.matrixLoc, false, flatten(this.transformationMatrix));
 
         this.gl.drawArrays(this.gl.TRIANGLES, 0, this.points.length);
